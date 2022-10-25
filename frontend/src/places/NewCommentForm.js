@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useHistory } from "react-router"
+import { CurrentUser } from '../contexts/CurrentUser'
 
 function NewCommentForm({ place, onSubmit }) {
 
@@ -16,7 +17,7 @@ function NewCommentForm({ place, onSubmit }) {
         const fetchData = async () => {
             const response = await fetch(`http://localhost:5000/users`)
             const users = await response.json()
-            setComment({ ...comment, authorId: users[0]?.userId})
+            setComment({ ...comment, authorId: users[0]?.userId })
             setAuthors(users)
         }
         fetchData()
@@ -35,6 +36,12 @@ function NewCommentForm({ place, onSubmit }) {
             rant: false,
             authorId: authors[0]?.userId
         })
+    }
+
+    const { currentUser } = useContext(CurrentUser)
+
+    if (!currentUser) {
+        return <p>You must be logged in to leave a rant or rave.</p>
     }
 
     return (
@@ -91,3 +98,4 @@ function NewCommentForm({ place, onSubmit }) {
 }
 
 export default NewCommentForm
+
